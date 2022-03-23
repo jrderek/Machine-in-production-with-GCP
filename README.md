@@ -138,36 +138,56 @@ hybrid_model
 Deploy trained model on Cloud AI Platform
 Create a bucket and move our models in
 # parameters for creating bucket
+
 REGION=us-central1
+
 BUCKET=$(gcloud config get-value project)
+
 TFVERSION=1.7
+
 # create a new bucket with Cloud Shell
+
 gsutil mb -l ${REGION} gs://${BUCKET}
 
 # copy the files from G-storage to our BUCKET
+
 gsutil -m cp -R gs://cloud-training-demos/babyweight/trained_model gs://${BUCKET}/babyweight
 Deploy trained model
+
 # parameters for AI-platform
+
 MODEL_NAME=babyweight
+
 MODEL_VERSION=ml_on_gcp
+
 MODEL_LOCATION=$(gsutil ls gs://${BUCKET}/babyweight/export/exporter/ | tail -1)
 
 # deploy model in the AI-platform
+
 gcloud ai-platform models create ${MODEL_NAME} --regions $REGION
+
 gcloud ai-platform versions create ${MODEL_VERSION} --model ${MODEL_NAME} --origin ${MODEL_LOCATION} --runtime-version $TFVERSION
+
 Data_Ingesting
+
 Data On-Premise
+
 This might be the simplest case where we just need to drag-and-drop the data into the google cloud bucket.
 
 We can use gsutil to move data to Google Cloud Storage*:
 
 # This copy all the text files in my local directory to my GCP bucket
+
 gsutil cp *.txt gs://my-bucket
+
 In more general format:
 
 # include -m here to enable multi-threading
+
 gsutil -m cp -r [SOURCE_DIRECTORY] gs://[BUCKET_NAME]
+
 Large Datasets
+
 Definition of large here is about 60 TB of data. One of the newly available options is receiving a physical Google device called a Transfer Appliance, which is Google’s rackable high-capacity storage server. Once received we can load data at our own datacenter on the transfer appliance and ship the data over to GCP.
 
 Adaptable_ml_system
